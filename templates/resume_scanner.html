@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Resume Scanner | ResuMaster</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #f4f9ff;
+      min-height: 100vh;
+      padding: 140px 40px 80px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #333;
+      position: relative;
+    }
+button.disabled-button {
+  pointer-events: none;
+  opacity: 0.6;
+}
+button.error-cursor:hover {
+  cursor: not-allowed !important;
+}
+
+
+    .logo {
+      height: 90px;
+      position: fixed;
+      top: 10px;
+      right: 20px;
+      object-fit: contain;
+      z-index: 100;
+    }
+
+    .site-title {
+      position: fixed;
+      top: 30px;
+      left: 30px;
+      font-size: 28px;
+      font-weight: 700;
+      color: #0047ab;
+      z-index: 100;
+    }
+
+    .scanner-container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      padding: 40px 30px;
+      width: 100%;
+      max-width: 700px;
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 26px;
+      color: #002f6c;
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: #555;
+      margin-bottom: 25px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 120px;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      resize: vertical;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    input[type="file"] {
+      padding: 10px;
+      border-radius: 8px;
+      background-color: #eef2f7;
+      border: 1px solid #ccc;
+      width: 100%;
+      margin-bottom: 25px;
+      cursor: pointer;
+    }
+
+    .card-button {
+      background-color: white;
+      border: 2px solid #0047ab;
+      color: #0047ab;
+      border-radius: 10px;
+      padding: 12px 25px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin: 10px 5px;
+    }
+
+ .card-button:hover {
+  box-shadow: 0 0 12px rgba(0, 71, 171, 0.2);
+  background-color: #003580;
+  color: white;
+}
+
+
+    .toggle-group {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      margin: 20px 0 30px 0;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 32px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: 0.4s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 24px;
+      width: 24px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: 0.4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #0047ab;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(28px);
+    }
+
+    .slider:after {
+      content: "OFF";
+      position: absolute;
+      color: white;
+      font-size: 10px;
+      right: 10px;
+      top: 8px;
+    }
+
+    input:checked + .slider:after {
+      content: "ON";
+      left: 12px;
+      right: auto;
+    }
+
+    .results {
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    .score-card {
+  background-color: #f0f5ff;
+  border-radius: 10px;
+  padding: 15px 20px;
+  margin-bottom: 12px;
+  position: relative;
+  overflow: hidden;
+  color: #002f6c;
+}
+
+.score-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 0;
+  width: var(--fill-percent);
+  background: var(--fill-color);
+  opacity: 0.2;
+  transition: width 0.3s ease;
+}
+
+.score-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+
+    .center {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0, 71, 171, 0.05);
+      color: #0047ab;
+      text-align: center;
+      font-size: 14px;
+      padding: 15px 0;
+      border-top: 1px solid rgba(0, 71, 171, 0.1);
+      font-weight: 500;
+      backdrop-filter: saturate(180%) blur(10px);
+      box-shadow: 0 -2px 8px rgba(0,71,171,0.05);
+      z-index: 50;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="site-title">ResuMaster</div>
+  <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo" />
+
+  <div class="scanner-container" id="mainCard">
+
+    <div id="formContainer">
+      <div id="phase1">
+        <h2>AI Resume Scanner</h2>
+        <p class="subtitle">
+          Paste the job description below and upload your resume(s) to check how well they match. One step closer to landing your dream job!
+        </p>
+        <textarea id="jdInput" placeholder="e.g. We're looking for a Python developer with experience in APIs, ML..."></textarea>
+<div style="display: flex; justify-content: center; gap: 15px;">
+  <!-- Next Button -->
+  <button id="nextBtn" class="card-button disabled-button error-cursor" title="Please enter a job description" style="
+    background-color: #0047ab;
+    border: 2px solid #0047ab;
+    color: white;
+  ">Next</button>
+
+  <!-- Back to Home Button -->
+  <a href="/" class="card-button" style="
+    background-color: white;
+    border: 2px solid #0047ab;
+    color: #0047ab;
+    display: inline-block;
+    text-align: center;
+    line-height: 20px;
+    text-decoration: none;
+    padding: 12px 25px;
+  ">⬅ Home</a>
+</div>
+
+      </div>
+
+      <div id="phase2" style="display: none;">
+        <h2>AI Resume Scanner</h2>
+        <p class="subtitle">Upload your resume(s) and toggle if submitting multiple files.</p>
+        <form id="scannerForm" method="POST" action="/resume_scanner" enctype="multipart/form-data">
+          <input type="hidden" name="jd_text" id="hiddenJD">
+          <div class="toggle-group">
+            <label><strong>Multiple resumes?</strong></label>
+            <label class="switch">
+              <input type="checkbox" id="toggleMultiple">
+              <span class="slider"></span>
+            </label>
+          </div>
+          <input type="file" name="resumes" id="fileInput" required>
+          <button type="submit" id="compareBtn" class="card-button">Check Resume/s</button>
+          <button type="button" class="card-button" onclick="goBackToPhase1()">Back</button>
+        </form>
+      </div>
+    </div>
+
+   {% if scores %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const formContainer = document.getElementById('formContainer');
+    formContainer.innerHTML = `
+      <div id="resultsSection">
+        <h2>AI Resume Scanner</h2>
+        <p class="subtitle">Below are the match scores for your uploaded resume(s):</p>
+        <div class="results">
+          <h3>Results:</h3>
+          {% for name, score in scores %}
+            <div class="score-card" style="
+              --fill-percent: {{ score }}%;
+              --fill-color: {{ '#90ee90' if score > 70 else '#add8e6' if score >= 40 else '#ffcccb' }};
+            ">
+              <strong>{{ name }}</strong> — {{ score }}% match
+            </div>
+          {% endfor %}
+        </div>
+        <div class="center">
+          <div class="center">
+  <button class="card-button" onclick="window.location.href='/'">Go Home ↩</button>
+  <button class="card-button" onclick="history.back()">Back</button>
+</div>
+
+        </div>
+      </div>
+    `;
+  });
+</script>
+{% endif %}
+
+
+  </div>
+
+  <footer>
+    &copy; 2025 ResuMaster. All rights reserved. | Designed with ❤ for job seekers.
+  </footer>
+
+  <script>
+    const jdInput = document.getElementById('jdInput');
+    const nextBtn = document.getElementById('nextBtn');
+    const phase1 = document.getElementById('phase1');
+    const phase2 = document.getElementById('phase2');
+    const hiddenJD = document.getElementById('hiddenJD');
+    const toggleCheckbox = document.getElementById('toggleMultiple');
+    const fileInput = document.getElementById('fileInput');
+
+  jdInput?.addEventListener('input', () => {
+  const isEmpty = jdInput.value.trim() === "";
+  nextBtn.classList.toggle('error-cursor', isEmpty);
+  nextBtn.classList.toggle('disabled-button', isEmpty);
+});
+
+
+
+    nextBtn?.addEventListener('click', () => {
+      hiddenJD.value = jdInput.value.trim();
+      phase1.style.display = 'none';
+      phase2.style.display = 'block';
+    });
+
+    function goBackToPhase1() {
+      phase2.style.display = 'none';
+      phase1.style.display = 'block';
+    }
+
+    toggleCheckbox?.addEventListener('change', () => {
+      fileInput.multiple = toggleCheckbox.checked;
+    });
+  </script>
+
+</body>
+</html>

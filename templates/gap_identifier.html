@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Skill Gap Identifier | ResuMaster</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #f4f9ff;
+      min-height: 100vh;
+      padding: 140px 20px 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #333;
+      position: relative;
+    }
+
+    .logo {
+      height: 90px;
+      position: fixed;
+      top: 10px;
+      right: 20px;
+      z-index: 100;
+    }
+
+    .site-title {
+      position: fixed;
+      top: 30px;
+      left: 30px;
+      font-size: 28px;
+      font-weight: 700;
+      color: #0047ab;
+      z-index: 100;
+    }
+
+    .scanner-container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      padding: 40px 30px;
+      max-width: 700px;
+      width: 100%;
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    h2 {
+      font-size: 24px;
+      color: #002f6c;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      margin-bottom: 20px;
+      color: #555;
+    }
+
+    textarea {
+      width: 100%;
+      height: 120px;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      resize: vertical;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    input[type="file"] {
+      padding: 10px;
+      border-radius: 8px;
+      background-color: #eef2f7;
+      border: 1px solid #ccc;
+      width: 100%;
+      margin-bottom: 25px;
+      cursor: pointer;
+    }
+
+    .card-button {
+      background-color: #0047ab;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 25px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .card-button:hover {
+      background-color: #003080;
+    }
+
+    .toggle-group {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      margin-bottom: 15px;
+    }
+
+    .toggle-group label {
+      margin-right: 10px;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: 0.4s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #0047ab;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+
+    .results {
+      margin-top: 30px;
+      font-size: 16px;
+    }
+
+    .score-card {
+      background-color: #f0f4ff;
+      border-left: 5px solid #0047ab;
+      padding: 15px 20px;
+      margin: 15px 0;
+      border-radius: 12px;
+      text-align: left;
+    }
+
+    .score-card ul {
+      padding-left: 20px;
+    }
+
+    .center {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .center button {
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: none;
+      background: #0047ab;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .center button:hover {
+      background: #003080;
+    }
+
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0, 71, 171, 0.05);
+      color: #0047ab;
+      text-align: center;
+      font-size: 14px;
+      padding: 15px 0;
+      border-top: 1px solid rgba(0, 71, 171, 0.1);
+      font-weight: 500;
+      backdrop-filter: saturate(180%) blur(10px);
+      box-shadow: 0 -2px 8px rgba(0,71,171,0.05);
+      z-index: 50;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="site-title">ResuMaster</div>
+  <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo" />
+
+  <div class="scanner-container">
+    {% if not gap_results %}
+    <h2>Skill Gap Identifier</h2>
+    <p class="subtitle">Upload resume(s) and paste the job description to find missing skills.</p>
+
+    <form method="POST" enctype="multipart/form-data" action="/gap_identifier" id="gapForm">
+      <textarea name="jd_text" placeholder="Paste job description here..." required></textarea>
+
+      <div class="toggle-group">
+        <label><strong>Multiple resumes?</strong></label>
+        <label class="switch">
+          <input type="checkbox" id="gapToggleMultiple">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <input type="file" name="resume_files" id="gapFileInput" accept=".pdf,.docx" required>
+
+      <button type="submit" class="card-button">Check Missing Skills</button>
+       <a href="/" style="
+  margin-left: 15px;
+  background-color: white;
+  color: #0047ab;
+  border: 2px solid #0047ab;
+  padding: 12px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-block;
+  transition: background-color 0.3s ease, color 0.3s ease;
+">
+  ⬅ Back to Home
+</a>
+    </form>
+    {% else %}
+    <h2>Results:</h2>
+    <div class="results">
+      {% for name, skills in gap_results.items() %}
+        <div class="score-card">
+          <strong>{{ name }}</strong><br>
+          {% if skills %}
+            <ul>
+              {% for skill in skills %}
+                <li>{{ skill }}</li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p><strong>No missing skills!</strong> Great job!</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+      <div class="center">
+  <button class="card-button" onclick="window.location.href='/'">Go Home ↩</button>
+  <button class="card-button" onclick="history.back()">Back</button>
+</div>
+
+    </div>
+    {% endif %}
+  </div>
+
+  <footer>
+    &copy; 2025 ResuMaster. All rights reserved. | Designed with ❤ for job seekers.
+  </footer>
+
+  <script>
+    const gapFileInput = document.getElementById("gapFileInput");
+    const gapToggleMultiple = document.getElementById("gapToggleMultiple");
+
+    gapToggleMultiple?.addEventListener("change", () => {
+      if (gapFileInput) gapFileInput.multiple = gapToggleMultiple.checked;
+    });
+  </script>
+</body>
+</html>

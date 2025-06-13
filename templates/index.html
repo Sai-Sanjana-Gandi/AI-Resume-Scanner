@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ResuMaster - Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+      }
+
+      body {
+        background-color: #f4f9ff;
+        min-height: 100vh;
+        padding: 140px 40px 100px 40px;
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+      }
+
+      .logo {
+        height: 90px;
+        position: fixed;
+        top: 10px;
+        right: 20px;
+        object-fit: contain;
+        z-index: 100;
+      }
+
+      .site-title {
+        position: fixed;
+        top: 30px;
+        left: 30px;
+        font-size: 28px;
+        font-weight: 700;
+        color: #0047ab;
+        z-index: 100;
+      }
+
+      .center-top {
+        text-align: center;
+        margin-top: -40px;
+        margin-bottom: 80px;
+        max-width: 900px;
+      }
+
+      .center-top h2 {
+        font-size: 28px;
+        font-weight: 600;
+        color: #002f6c;
+        margin-bottom: 10px;
+      }
+
+      .center-top p {
+        font-size: 16px;
+        color: #555;
+        line-height: 1.6;
+      }
+
+      .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        width: 100%;
+        max-width: 1000px;
+        padding-bottom: 60px;
+      }
+
+      .card {
+        background: white;
+        padding: 30px 20px;
+        border-radius: 16px;
+        border: 2px solid #0047ab;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        text-align: center;
+        text-decoration: none;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        color: #0047ab;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 32px rgba(0,0,0,0.15);
+      }
+
+      .card h3 {
+        font-size: 20px;
+        margin-bottom: 10px;
+      }
+
+      .card p {
+        font-size: 14px;
+        opacity: 0.8;
+      }
+
+      footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: rgba(0, 71, 171, 0.05);
+        color: #0047ab;
+        text-align: center;
+        font-size: 14px;
+        padding: 15px 0;
+        border-top: 1px solid rgba(0, 71, 171, 0.1);
+        font-weight: 500;
+        backdrop-filter: saturate(180%) blur(10px);
+        box-shadow: 0 -2px 8px rgba(0,71,171,0.05);
+        z-index: 50;
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- Fixed Title & Logo -->
+    <div class="site-title">ResuMaster</div>
+    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo" />
+
+    <!-- Central Heading -->
+  <div class="center-top">
+    <h2>Tools needed to create and optimize resumes — in one place</h2>
+    <p>
+      Build, scan, and enhance your resume effortlessly. Everything is 100% FREE, smart, and beginner-friendly!<br>
+      Generate ATS-friendly resumes, analyze job descriptions, and boost your chances — all in a few clicks.
+    </p>
+  </div>
+
+<div class="card-grid">
+  <a href="/gap_identifier" class="card">
+    <h3>Skill Gap Identifier</h3>
+    <p>Detect missing skills in your resume by comparing it with job requirements.</p>
+  </a>
+  <a href="/resume_scanner" class="card">
+    <h3>AI Resume Scanner</h3>
+    <p>Scan and compare resumes against job descriptions.</p>
+  </a>
+  <a href="/resume_optimizer" class="card">
+    <h3>Resume Optimizer</h3>
+    <p>Get AI-powered suggestions to enhance your resume's structure, keywords, and readability.</p>
+  </a>
+  <a href="/resume_score_checker" class="card">
+    <h3>Resume Score Checker</h3>
+    <p>Get an AI-generated score for your resume and expert suggestions to improve it.</p>
+</a>
+
+  <a href="/compare_resumes" class="card">
+    <h3>Compare Resumes</h3>
+    <p>Compare two or three resumes side-by-side to choose the best version.</p>
+  </a>
+  <a href="/resume_data_extractor" class="card">
+    <h3>Resume Data Extractor</h3>
+    <p>Extract complete details like name, skills, education, and experience from any resume file.</p>
+  </a>
+</div>
+
+
+    <!-- Footer -->
+    <footer>
+      &copy; 2025 ResuMaster. All rights reserved. | Designed with ❤ for job seekers.
+    </footer>
+
+  </body>
+  </html>

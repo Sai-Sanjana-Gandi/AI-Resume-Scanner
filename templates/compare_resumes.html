@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Compare Resumes | ResuMaster</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #f4f9ff;
+      min-height: 100vh;
+      padding: 140px 40px 80px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #333;
+    }
+
+    .site-title {
+      position: fixed;
+      top: 30px;
+      left: 30px;
+      font-size: 28px;
+      font-weight: 700;
+      color: #0047ab;
+      z-index: 100;
+    }
+
+    .logo {
+      height: 90px;
+      position: fixed;
+      top: 10px;
+      right: 20px;
+      object-fit: contain;
+      z-index: 100;
+    }
+
+    .scanner-container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      padding: 40px 30px;
+      width: 100%;
+      max-width: 1000px;
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 26px;
+      color: #002f6c;
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: #555;
+      margin-bottom: 25px;
+    }
+
+    input[type="file"] {
+      padding: 10px;
+      border-radius: 8px;
+      background-color: #eef2f7;
+      border: 1px solid #ccc;
+      width: 100%;
+      margin-bottom: 25px;
+      cursor: pointer;
+    }
+
+    button {
+      background-color: #0047ab;
+  color: white;
+  border: 2px solid #0047ab;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #003580;
+    }
+
+    .toggle-group {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 32px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: 0.4s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 24px;
+      width: 24px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: 0.4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #0047ab;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(28px);
+    }
+
+    .results {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      background-color: #f0f5ff;
+      border-radius: 12px;
+      padding: 20px;
+      width: 30%;
+      box-shadow: 0 4px 12px rgba(0, 71, 171, 0.08);
+      color: #002f6c;
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+    }
+
+    .card ul {
+      text-align: left;
+      margin-top: 8px;
+      padding-left: 20px;
+    }
+
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0, 71, 171, 0.05);
+      color: #0047ab;
+      text-align: center;
+      font-size: 14px;
+      padding: 15px 0;
+      border-top: 1px solid rgba(0, 71, 171, 0.1);
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="site-title">ResuMaster</div>
+  <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo" />
+
+  <div class="scanner-container">
+    <h2>Compare Resumes</h2>
+    <p class="subtitle">Upload 2 or 3 resumes to compare their strengths and weaknesses.</p>
+
+    <form method="POST" enctype="multipart/form-data">
+      <div class="toggle-group">
+        <label><strong>Compare 3 resumes?</strong></label>
+        <label class="switch">
+          <input type="checkbox" id="toggleCompare" name="compare_count" value="3" onchange="toggleText(this)">
+          <span class="slider"></span>
+        </label>
+        <span id="toggleText">Currently comparing: 2 resumes</span>
+      </div>
+
+      <input type="file" name="resume_files" accept=".pdf,.docx" multiple required>
+      <br>
+      <button type="submit">Compare Resumes</button>
+     <a href="/" style="
+  margin-left: 15px;
+  background-color: white;
+  color: #0047ab;
+  border: 2px solid #0047ab;
+  padding: 12px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-block;
+  transition: background-color 0.3s ease, color 0.3s ease;
+">
+  ⬅ Back to Home
+</a>
+    </form>
+
+    {% if resume_data %}
+      <div class="results">
+        {% for resume in resume_data %}
+          <div class="card">
+            <h3>{{ resume.name }}</h3>
+            <h4>Strengths:</h4>
+            <ul>
+              {% for item in resume.strengths %}
+                <li>{{ item }}</li>
+              {% endfor %}
+            </ul>
+            <h4>Weaknesses:</h4>
+            <ul>
+              {% for item in resume.weaknesses %}
+                <li>{{ item }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+
+  <footer>
+    &copy; 2025 ResuMaster. All rights reserved. | Designed with ❤ for job seekers.
+  </footer>
+
+  <script>
+    function toggleText(el) {
+      const label = document.getElementById('toggleText');
+      label.innerText = el.checked ? "Currently comparing: 3 resumes" : "Currently comparing: 2 resumes";
+      el.value = el.checked ? 3 : 2;
+    }
+  </script>
+</body>
+</html>

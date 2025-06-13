@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Resume Optimizer | ResuMaster</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #f4f9ff;
+      min-height: 100vh;
+      padding: 140px 40px 80px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #333;
+      position: relative;
+    }
+
+    .logo {
+      height: 90px;
+      position: fixed;
+      top: 10px;
+      right: 20px;
+      object-fit: contain;
+      z-index: 100;
+    }
+
+    .site-title {
+      position: fixed;
+      top: 30px;
+      left: 30px;
+      font-size: 28px;
+      font-weight: 700;
+      color: #0047ab;
+      z-index: 100;
+    }
+
+    .optimizer-container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      padding: 40px 30px;
+      width: 100%;
+      max-width: 700px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 26px;
+      color: #002f6c;
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: #555;
+      margin-bottom: 25px;
+    }
+
+    input[type="file"] {
+      padding: 10px;
+      border-radius: 8px;
+      background-color: #eef2f7;
+      border: 1px solid #ccc;
+      width: 100%;
+      margin-bottom: 25px;
+      cursor: pointer;
+    }
+
+    .card-button {
+      background-color: #0047ab;
+      border: 2px solid #0047ab;
+      color: white;
+      border-radius: 10px;
+      padding: 12px 25px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+   .card-button:hover {
+      box-shadow: 0 0 12px rgba(0, 71, 171, 0.2);
+      background-color:#003580
+    }
+
+    ul {
+      text-align: left;
+      margin-top: 25px;
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 10px;
+      color: #002f6c;
+    }
+
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0, 71, 171, 0.05);
+      color: #0047ab;
+      text-align: center;
+      font-size: 14px;
+      padding: 15px 0;
+      border-top: 1px solid rgba(0, 71, 171, 0.1);
+      font-weight: 500;
+      backdrop-filter: saturate(180%) blur(10px);
+      box-shadow: 0 -2px 8px rgba(0,71,171,0.05);
+      z-index: 50;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="site-title">ResuMaster</div>
+  <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo" />
+
+  <div class="optimizer-container">
+    <h1>AI Resume Optimizer</h1>
+    <p class="subtitle">Upload your resume to receive personalized improvement suggestions.</p>
+
+    <form method="POST" enctype="multipart/form-data">
+      <input type="file" name="resume_file" accept=".pdf,.docx" required>
+      <br>
+      <input type="submit" class="card-button" value="Analyze & Optimize">
+        <a href="/" style="
+  margin-left: 15px;
+  background-color: white;
+  color: #0047ab;
+  border: 2px solid #0047ab;
+  padding: 12px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-block;
+  transition: background-color 0.3s ease, color 0.3s ease;
+">
+  ⬅ Back to Home
+</a>
+    </form>
+
+    {% if suggestions %}
+      <h2 style="margin-top: 30px; color: #0047ab;">Suggestions to Improve Your Resume:</h2>
+      <ul>
+        {% for suggestion in suggestions %}
+          <li>{{ suggestion }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </div>
+
+  <footer>
+    &copy; 2025 ResuMaster. All rights reserved. | Designed with ❤ for job seekers.
+  </footer>
+
+</body>
+</html>

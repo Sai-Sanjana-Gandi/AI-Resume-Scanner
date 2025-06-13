@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Resume Data Extractor | ResuMaster</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f4f9ff;
+            padding: 140px 20px 60px;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .site-title {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            font-size: 28px;
+            font-weight: 700;
+            color: #0047ab;
+            z-index: 100;
+        }
+
+        .logo {
+            height: 90px;
+            position: fixed;
+            top: 10px;
+            right: 20px;
+            object-fit: contain;
+            z-index: 100;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 25px;
+            color: #002f6c;
+        }
+
+        form {
+            margin-bottom: 40px;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 71, 171, 0.08);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        input[type="file"] {
+            padding: 10px;
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            background-color: #eef2f7;
+        }
+
+        button {
+            margin-top: 15px;
+            background-color: #0047ab;
+            border: none;
+            color: white;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #003580;
+        }
+
+        .card {
+            background: #f0f5ff;
+            border-radius: 12px;
+            padding: 25px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 4px 12px rgba(0, 71, 171, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .card h2 {
+            margin-bottom: 15px;
+            color: #0047ab;
+        }
+
+        .card p, .card li {
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 71, 171, 0.05);
+            color: #0047ab;
+            text-align: center;
+            font-size: 14px;
+            padding: 15px 0;
+            border-top: 1px solid rgba(0, 71, 171, 0.1);
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="site-title">ResuMaster</div>
+    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo" />
+
+    <h1>Resume Data Extractor</h1>
+
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="resume_file" accept=".pdf,.docx" required>
+        <br><br>
+        <button type="submit">Extract Details</button>
+        <a href="/" style="
+  margin-left: 15px;
+  background-color: white;
+  color: #0047ab;
+  border: 2px solid #0047ab;
+  padding: 12px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-block;
+  transition: background-color 0.3s ease, color 0.3s ease;
+">
+  ⬅ Back to Home
+</a>
+    </form>
+
+    {% if data %}
+    <div class="card">
+        <h2>Extracted Resume Information</h2>
+        <p><strong>Name:</strong> {{ data.name }}</p>
+        <p><strong>Email:</strong> {{ data.email }}</p>
+        <p><strong>Phone:</strong> {{ data.phone }}</p>
+        <p><strong>Skills:</strong> {{ data.skills | join(', ') }}</p>
+
+        <p><strong>Education:</strong></p>
+        <ul>
+            {% for edu in data.education %}
+                <li>{{ edu }}</li>
+            {% endfor %}
+        </ul>
+
+        <p><strong>Experience:</strong></p>
+        <ul>
+            {% for exp in data.experience %}
+                <li>{{ exp }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <footer>
+        &copy; 2025 ResuMaster. All rights reserved. | Designed with ❤ for job seekers.
+    </footer>
+</body>
+</html>
