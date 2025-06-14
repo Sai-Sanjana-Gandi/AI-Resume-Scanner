@@ -327,5 +327,5 @@ def resume_data_extractor():
     return render_template('resume_data_extractor.html', data=data)
 
 if __name__ == '__main__':
-    #app.run(debug=True)
-    app.run()
+    app.run(debug=True)
+    #app.run()
